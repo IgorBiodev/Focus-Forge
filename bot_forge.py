@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-chave = os.getenv('token_telegram')
+chave = os.getenv('TOKEN_TELEGRAM')
 if not chave:
     raise ValueError("ERRO: Chave do Telegram não encontrada no arquivo .env!")
 
@@ -57,6 +57,18 @@ def parar(mensagem):
     del sessoes_ativas[id_usuario]
 
     bot.reply_to(mensagem, f"🛑 Foco Encerrado!\n⏱ Tempo Total: {tempo}")
+
+@bot.message_handler(commands=['deletar'])
+def del_sessao(mensagem):
+    id_usuario = mensagem.chat.id
+
+    try:
+        bc.del_sessao(id_usuario)
+        bot.reply_to(mensagem,'🗑️ Ultima sessão deletada com sucesso!')
+    except Exception as e:
+        bot.reply_to(mensagem, f'⚠️ Erro a deletar: {e}')
+
+
 
 
 print("--- 🤖 BOT FOCUS FORGE INICIADO ---")

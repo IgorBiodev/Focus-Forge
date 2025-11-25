@@ -91,3 +91,14 @@ def ler_historico():
 
     return lista_sessoes
 
+
+def del_sessao(usuario_id):
+    conexao = sq.connect('forge.db')
+    cursor = conexao.cursor()
+
+    cursor.execute('''
+DELETE FROM sessoes WHERE id = (SELECT MAX(id) FROM sessoes WHERE usuario_id = ?)
+''',(usuario_id,))
+    
+    conexao.commit()
+    conexao.close()
