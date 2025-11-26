@@ -47,8 +47,8 @@ class FocusBot:
             self.bot.reply_to(mensagem, "❌ Nenhuma sessão ativa para parar.")
             return
 
-        
-        self.id_banco = self.sessoes_ativas[id_usuario]
+        dados = self.sessoes_ativas[id_usuario]
+        self.id_banco = dados["id_banco"]
 
     
         self.tempo = bc.encerrar_sessao(self.id_banco)
