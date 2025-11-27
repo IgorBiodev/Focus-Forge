@@ -14,6 +14,32 @@ class FocusBot:
 
         self.bot = telebot.TeleBot(chave)
         self.sessoes_ativas = {}
+        self.abrir_memoria()
+
+    def salvar_memoria(self):
+        try:
+            with open('backup.json','w') as arquivo:
+                    json.dump(self.sessoes_ativas, arquivo, indent=4)
+            
+            print("Memória salva!")
+
+        except Exception as e:
+            print(f"Houve um erro a salvar a memoria: {e}")
+    
+    def abrir_memoria(self):
+        if os.path.exists('backup.json'):
+            try:
+
+                with open('backup.json', 'r', encoding= 'utf-8') as arquivo:
+                    self.sessoes_ativas = json.load(arquivo)
+                print('Memoria restaurada!')
+
+            except Exception as e:
+                print(f'Erro ao abrir memoria: {e}')
+        else:
+            print('Nenhuma memoria encontrada! Inciando memoria limpa...')
+
+        
 
     def debug(self, mensagem):
         self.historico = json.dumps(self.sessoes_ativas, indent=4)
@@ -37,6 +63,7 @@ class FocusBot:
         }
     
         self.sessoes_ativas[id_usuario] = dados_sessao
+        self.salvar_memoria()
         
         self.bot.reply_to(mensagem, f"🛡️ Sessão iniciada! Tema: {tema}\n(ID do Banco: {id_banco})")
 
@@ -54,6 +81,7 @@ class FocusBot:
         self.tempo = bc.encerrar_sessao(self.id_banco)
 
         del self.sessoes_ativas[id_usuario]
+        self.salvar_memoria()
 
         self.bot.reply_to(mensagem, f"🛑 Foco Encerrado!\n⏱ Tempo Total: {self.tempo}")
 
@@ -85,6 +113,7 @@ class FocusBot:
 
         print("🤖 FocusBot System ONLINE...")
         self.bot.polling()
+
 
 if __name__ == "__main__":
     robo = FocusBot()
