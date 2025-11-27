@@ -31,7 +31,8 @@ class FocusBot:
             try:
 
                 with open('backup.json', 'r', encoding= 'utf-8') as arquivo:
-                    self.sessoes_ativas = json.load(arquivo)
+                    dados_brutos = json.load(arquivo)
+                    self.sessoes_ativas = {int(k): v for k, v in dados_brutos.items()}
                 print('Memoria restaurada!')
 
             except Exception as e:
